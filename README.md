@@ -13,7 +13,7 @@
 
 成品展示： 
 
-![img](https://pic2.zhimg.com/80/v2-a251933f28643c9af7aac01adbd26616_1440w.jpg)
+![image.png](https://cdn.nlark.com/yuque/0/2023/png/22569186/1684739594091-379cdf84-28f5-4998-835f-7c9555fddac7.png#averageHue=%23a8c1db&clientId=uc29edf23-5138-4&from=paste&height=687&id=ua755022a&originHeight=1374&originWidth=2560&originalType=binary&ratio=2&rotation=0&showTitle=false&size=944474&status=done&style=none&taskId=ucc34614d-4b0d-48dc-a316-949d41f13b8&title=&width=1280)
 
 添加图片注释，不超过 140 字（可选）
 
