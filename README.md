@@ -19,6 +19,5 @@
 
 ## 2. 快速上手
 
-请查看wiki内容
-https://github.com/legeling/Annualreport_tools/wiki/%E4%BB%A3%E7%A0%81%E6%9B%B4%E6%96%B0%E6%8F%90%E9%86%92%EF%BC%81%EF%BC%81
+[请查看wiki内容](https://github.com/legeling/Annualreport_tools/wiki/%E4%BB%A3%E7%A0%81%E6%9B%B4%E6%96%B0%E6%8F%90%E9%86%92%EF%BC%81%EF%BC%81)
 
