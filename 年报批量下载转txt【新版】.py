@@ -119,8 +119,8 @@ if __name__ == '__main__':
     else:
         #处理单独年份：
         #特定年份的excel表格，请务必修改。
-        year = 2022
-        file_name = f"/Users/wangjialong/文档/MyProgram/PycharmProjects/Spider/财报数据/年报/年报链接_{year}【公众号：凌小添】.xlsx"
+        year = 2019
+        file_name = f"/Users/文档/MyProgram/PycharmProjects/Spider/财报数据/年报/年报链接_{year}【公众号：凌小添】.xlsx"
         pdf_dir = f'年报文件/{year}/pdf年报'
         txt_dir = f'年报文件/{year}/txt年报'
         main(file_name, pdf_dir, txt_dir, flag_pdf)
