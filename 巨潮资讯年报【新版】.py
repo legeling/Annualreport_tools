@@ -194,7 +194,7 @@ if __name__ == '__main__':
     global counter
     global sum
     counter = 1  # 计数器
-    setYear = 2022 #设置下载年份
+    setYear = 2019 #设置下载年份
     Flag = False #是否开启批量下载模式
     if Flag:
         for setYear in range(2004,2022):
