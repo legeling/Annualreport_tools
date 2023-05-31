@@ -3,7 +3,7 @@
 @File    ：年报批量下载.py
 @IDE     ：PyCharm
 @Author  ：lingxiaotian
-@Date    ：2023/5/30 11:38
+@Date    ：2023/5/30 11:39
 '''
 
 import pandas as pd
