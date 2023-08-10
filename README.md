@@ -1,4 +1,4 @@
-<div align=center><img width="320" height="320" src="https://cdn.nlark.com/yuque/0/2023/png/22569186/1684745335675-3954e453-98c6-4004-9643-fc913f90b01b.png?x-oss-process=image%2Fresize%2Cw_1401%2Climit_0"/></div>
+<div align=center><img src="https://cdn.nlark.com/yuque/0/2023/png/22569186/1684745335675-3954e453-98c6-4004-9643-fc913f90b01b.png?x-oss-process=image%2Fresize%2Cw_1401%2Climit_0"/></div>
 
 # Annualreport_tools
 一个用于爬取公司年报，并将格式转为TXT文本便于词频分析的小工具
@@ -15,7 +15,7 @@
 - 项目提交
 ### 2023/4/20
 - 项目提交
----
+
 
 ## 3. Todo
 * [x] GUI界面
