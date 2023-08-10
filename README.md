@@ -24,4 +24,4 @@
 ## [爱发电](https://afdian.net/a/NBFX1)
 
 <summary>爱发电 以及 感谢投喂 </summary>
-<img width="365px" height="450px" src="[https://raw.githubusercontent.com/legeling/-/main/afdian-%E5%87%8C%E5%B0%8F%E6%B7%BB.jpg?token=GHSAT0AAAAAACFNMD2RGJUD7RDL3XSWXSNMZGULDGA](https://github.com/legeling/-/blob/main/afdian-%E5%87%8C%E5%B0%8F%E6%B7%BB.jpg?raw=true)https://github.com/legeling/-/blob/main/afdian-%E5%87%8C%E5%B0%8F%E6%B7%BB.jpg?raw=true">
+<img width="365px" height="450px" src="https://github.com/legeling/-/blob/main/afdian-%E5%87%8C%E5%B0%8F%E6%B7%BB.jpg?raw=true">
