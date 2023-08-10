@@ -1,6 +1,12 @@
 # Annualreport_tools
 一个用于爬取公司年报，并将格式转为TXT文本便于词频分析的小工具
 
+## 更新日志
+- 5.25 全新接口
+- 4.20 项目提交
+
+---
+
 ## 1.项目分析
 
  数据来源：巨潮资讯网
@@ -15,7 +21,6 @@
 
 ![image.png](https://cdn.nlark.com/yuque/0/2023/png/22569186/1684739594091-379cdf84-28f5-4998-835f-7c9555fddac7.png#averageHue=%23a8c1db&clientId=uc29edf23-5138-4&from=paste&height=687&id=ua755022a&originHeight=1374&originWidth=2560&originalType=binary&ratio=2&rotation=0&showTitle=false&size=944474&status=done&style=none&taskId=ucc34614d-4b0d-48dc-a316-949d41f13b8&title=&width=1280)
 
-添加图片注释，不超过 140 字（可选）
 
 ## 2. 快速上手
 
