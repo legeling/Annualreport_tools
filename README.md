@@ -23,5 +23,5 @@
 
 ## [爱发电](https://afdian.net/a/NBFX1)
 
-<summary>[爱发电](https://afdian.net/a/NBFX1) 以及 [感谢投喂](https://afdian.net/a/NBFX1) </summary>
+[感谢投喂](https://afdian.net/a/NBFX1) 
 <img width="365px" height="450px" src="https://github.com/legeling/-/blob/main/afdian-%E5%87%8C%E5%B0%8F%E6%B7%BB.jpg?raw=true">
