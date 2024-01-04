@@ -53,7 +53,6 @@ def get_report(page_num,date):
     response = requests.post(url, data=data, headers=headers)
     return response
 
-
 # 发送HTTP请求并获取响应
 def downlaod_report(date):
     global counter
@@ -125,11 +124,13 @@ def downlaod_report(date):
                 continue
     return all_results
 
+
 def main(year):
     # 计数器
     global sum
     date_count = f"{year}-01-01~{year}-04-30"
     response = get_report(1,date_count)
+
     data = response.json()
     sum = data["totalpages"]
 
@@ -195,7 +196,7 @@ if __name__ == '__main__':
     global sum
     counter = 1  # 计数器
     setYear = 2019 #设置下载年份
-    Flag = False #是否开启批量下载模式
+    Flag = 0  #是否开启批量下载模式
     if Flag:
         for setYear in range(2004,2022):
             counter = 1  # 计数器
@@ -204,3 +205,4 @@ if __name__ == '__main__':
     else:
         main(setYear)
         print(f"----{setYear}年下载完成")
+

@@ -10,16 +10,19 @@ import re
 import xlwt
 import jieba
 
+
 def extract_keywords(filename, keywords):
-    """
-    从指定文件中提取关键词，并统计关键词出现次数和总字数。
-    """
+
     keyword_counts = [0] * len(keywords)
     total_words = 0  # 统计总字数
 
     try:
         with open(filename, 'r', encoding='utf-8') as f:
             content = f.read()
+
+        # 将关键词添加到自定义词典
+        for word in keywords:
+            jieba.add_word(word)
 
         # 使用jieba库进行分词
         words = jieba.cut(content)
@@ -30,6 +33,7 @@ def extract_keywords(filename, keywords):
             keyword_counts[i] = words.count(keyword)
 
         total_words = len(words)  # 统计总字数
+
     except FileNotFoundError:
         print(f"文件不存在: {filename}")
     except PermissionError:
@@ -167,24 +171,7 @@ def process_files(folder_path, keywords, start_year=None, end_year=None):
 if __name__ == '__main__':
     # 设置要提取的关键词列表
     keywords = [
-        '人工智能', '商业智能', '图像理解',
-        '投资决策辅助系统', '智能数据分', '大数据', '数据挖掘', '文本挖掘',
-        '智能机器人', '机器学习', '深度学习', '数据可视化', '异构数据',
-        '语义搜索', '生物识别技术', '混合现实', '虚拟现实',
-        '人脸识别', '语音识别', '身份验证', '自动驾驶', '自然语言处理',
-        '企业数字化转型', '云计算', '流计算',
-        '图计算', '内存计算', '多方安全计算', '类脑计算', '綠色计算',
-        '认知计算', '融合架构', '亿级并发', '区块链', '数字货币',
-        '分布式计算', 'EB级存储', '物联网', '信息物理系统',
-        '差分隐私技术', '智能金融合约', '移动互联网',
-        '工业互联网', '移动互联', '互联网医疗', '电子商务', '移动支付',
-        '第三方支付', 'NFC支付', '智能能源', 'B2B', 'B2C',
-        'C2B', 'C2C', '020', '网联', '智能穿戴',
-        '智慧农业', '智能交通', '智能医疗', '智能客服', '智能家居',
-        '智能投顾', '智能文旅', '智能环保', '智能电网', '智能营销',
-        '数字营销', '无人零售', '互联网金融', '数学金融', 'Fintech',
-        '金融科技', '量化金融', '开放银行'
-    ]
+        '人工智能', '商业智能', '图像理解','投资决策辅助系统', '智能数据分', '大数据', '数据挖掘', '文本挖掘' ]
     # !!!!!注意，请务必将各个年份的年报 文件夹 放到一个大的 文件夹 中，并填入此文件夹的内容，请不要存放其他非年报文件。
     # 输入根文件夹路径，建议输入绝对路径，如“D:/数据集/上市公司爬虫/年报文件夹”
     root_folder = "D:/数据集/上市公司爬虫/年报文件"
