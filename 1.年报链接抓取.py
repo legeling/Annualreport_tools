@@ -142,7 +142,11 @@ def main(year):
         f"{year}-04-16~{year}-04-22",
         f"{year}-04-23~{year}-04-26",
         f"{year}-04-27~{year}-04-28",
-        f"{year}-04-29~{year}-04-30"
+        f"{year}-04-29~{year}-04-30",
+        f"{year}-05-01~{year}-07-31",
+        f"{year}-08-01~{year}-10-31",
+        f"{year}-11-01~{year}-11-30",
+        f"{year}-12-01~{year}-12-31"
     ]
     for i in time_segments:
         results = downlaod_report(i)
@@ -195,7 +199,7 @@ if __name__ == '__main__':
     global counter
     global sum
     counter = 1  # 计数器
-    setYear = 2019 #设置下载年份
+    setYear = 2011 #设置下载年份
     Flag = 0  #是否开启批量下载模式
     if Flag:
         for setYear in range(2004,2022):
