@@ -69,7 +69,7 @@ def convert(code, name, year, pdf_url, pdf_dir, txt_dir, flag_pdf):
 
 
 
-def main(file_name,pdf_dir,txt_dir,flag_pdf):
+def main(file_name,pdf_dir,txt_dir,flag_pdf,year):
     print("程序开始运行，请耐心等待……")
     # 读取Excel文件
     try:
@@ -85,7 +85,7 @@ def main(file_name,pdf_dir,txt_dir,flag_pdf):
         return
 
     # 读取文件内容并存储为字典
-    content_dict = ((row['公司代码'], row['公司简称'], row['年份'], row['年报链接']) for _, row in df.iterrows())
+    content_dict = ((row['公司代码'], row['公司简称'], row['年份'], row['年报链接']) for _, row in df.iterrows() if str(row['年份']) == str(year))
 
     # 多进程下载PDF并转为TXT文件
     with multiprocessing.Pool() as pool:
@@ -109,19 +109,20 @@ if __name__ == '__main__':
     if Flag:
         #批量下载并转换年份区间
         for year in range(2004,2022):
-            # ===========Excel表格路径，建议使用绝对路径，务必请自行修改！！！！！！！===========
-            file_name = f"/Users/文档/MyProgram/PycharmProjects/财报数据/年报/年报链接_{year}【公众号：凌小添】.xlsx"
+            # ===========Excel表格路径，建议使用绝对路径，请自行修改！！！！！！！===========
+            # 2024年02月14日更新后，此处只需要填写总表的路径，请于网盘或者github中获取总表
+            file_name = f"年报链接2002-2023.xlsx"
             # 创建存储文件的文件夹路径，如有需要请修改
             pdf_dir = f'年报文件/{year}/pdf年报'
             txt_dir = f'年报文件/{year}/txt年报'
-            main(file_name,pdf_dir,txt_dir,flag_pdf)
+            main(file_name,pdf_dir,txt_dir,flag_pdf.year)
             print(f"{year}年年报处理完毕，若报错，请检查后重新运行")
     else:
         #处理单独年份：
         #特定年份的excel表格，请务必修改。
-        year = 2019
-        file_name = f"/Users/wangjialong/PycharmProjects/Annualreport_tools/年报链接_{year}【公众号：凌小添】.xlsx"
+        year = 2018
+        file_name = f"年报链接2002-2023.xlsx"
         pdf_dir = f'年报文件/{year}/pdf年报'
         txt_dir = f'年报文件/{year}/txt年报'
-        main(file_name, pdf_dir, txt_dir, flag_pdf)
+        main(file_name, pdf_dir, txt_dir, flag_pdf,year)
         print(f"{year}年年报处理完毕，若报错，请检查后重新运行")

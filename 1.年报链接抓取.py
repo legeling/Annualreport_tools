@@ -128,9 +128,8 @@ def downlaod_report(date):
 def main(year):
     # 计数器
     global sum
-    date_count = f"{year}-01-01~{year}-04-30"
+    date_count = f"{year}-01-01~{year}-12-31"
     response = get_report(1,date_count)
-
     data = response.json()
     sum = data["totalpages"]
 
@@ -170,9 +169,9 @@ def main(year):
         title = f"《{title}》"
 
         adjunct_url = item["adjunctUrl"]
-        year = re.search(r"\d{4}", title)
+        year = re.search(r"(\d{4})年", title)
         if year:
-            year = year.group()
+            year = year.group(1)
         else:
             year = setYear
         time = f"{year}"
@@ -195,14 +194,14 @@ def main(year):
 if __name__ == '__main__':
     # 全局变量
     # 排除列表可以加入'更正后','修订版'来规避数据重复或公司发布之前年份的年报修订版等问题，
-    exclude_keywords = ['英文', '摘要','已取消','公告']
+    exclude_keywords = ['英文','已取消','公告','摘要']
     global counter
     global sum
     counter = 1  # 计数器
-    setYear = 2011 #设置下载年份
-    Flag = 0  #是否开启批量下载模式
+    setYear = 2020 #设置下载年份
+    Flag = 1  #是否开启批量下载模式
     if Flag:
-        for setYear in range(2004,2022):
+        for setYear in range(2002,2023):
             counter = 1  # 计数器
             main(setYear)
             print(f"----{setYear}年下载完成")
