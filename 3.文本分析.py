@@ -14,7 +14,7 @@ import jieba
 def extract_keywords(filename, keywords):
 
     keyword_counts = [0] * len(keywords)
-    total_words = 0  # 统计总字数
+    total_words = 0  # 统计文章的总词数
 
     try:
         with open(filename, 'r', encoding='utf-8') as f:
@@ -27,12 +27,18 @@ def extract_keywords(filename, keywords):
         # 使用jieba库进行分词
         words = jieba.cut(content)
         words = [word for word in words if word.strip()]
+        # 使用正则表达式去除标点符号、数字、英文、空格等非中文字符
+        content_non = re.sub(r'[^\u4e00-\u9fa5]', '', content)
+        words_non = jieba.cut(content_non)
+        words_non = [word for word in words_non if word.strip()]
+
+
 
         # 统计关键词出现次数
         for i, keyword in enumerate(keywords):
             keyword_counts[i] = words.count(keyword)
 
-        total_words = len(words)  # 统计总字数
+        total_words = len(words_non)  # 统计总词数
 
     except FileNotFoundError:
         print(f"文件不存在: {filename}")
@@ -80,7 +86,7 @@ def count_txt_files(folder_path, start_year=None, end_year=None):
 
 def process_files(folder_path, keywords, start_year=None, end_year=None):
     """
-    处理指定文件夹及其子文件夹中的所有txt文件，提取关键词并统计词频和总字数，将结果存储到Excel表格中。
+    处理指定文件夹及其子文件夹中的所有txt文件，提取关键词并统计词频和总词数，将结果存储到Excel表格中。
     """
     try:
         # 创建Excel工作簿
@@ -91,7 +97,7 @@ def process_files(folder_path, keywords, start_year=None, end_year=None):
         worksheet.write(row, 0, '股票代码')
         worksheet.write(row, 1, '公司简称')
         worksheet.write(row, 2, '年份')
-        worksheet.write(row, 3, '总字数')  # 添加总字数列
+        worksheet.write(row, 3, '总词数')  # 添加总词数列
         for i, keyword in enumerate(keywords):
             worksheet.write(row, i + 4, keyword)  # 调整关键词列的索引
         row += 1
@@ -120,14 +126,14 @@ def process_files(folder_path, keywords, start_year=None, end_year=None):
                             stock_code = match.group(1)
                             company_name = match.group(2)
 
-                            # 提取关键词并统计词频和总字数
+                            # 提取关键词并统计词频和总词数
                             keyword_counts, total_words = extract_keywords(os.path.join(root, filename), keywords)
 
                             # 将结果写入Excel表格
                             worksheet.write(row, 0, stock_code)
                             worksheet.write(row, 1, company_name)
                             worksheet.write(row, 2, year)
-                            worksheet.write(row, 3, total_words)  # 写入总字数
+                            worksheet.write(row, 3, total_words)  # 写入总词数
                             for i, count in enumerate(keyword_counts):
                                 worksheet.write(row, i + 4, count)  # 调整关键词列的索引
                             row += 1
@@ -174,7 +180,7 @@ if __name__ == '__main__':
         '人工智能', '商业智能', '图像理解','投资决策辅助系统', '智能数据分', '大数据', '数据挖掘', '文本挖掘' ]
     # !!!!!注意，请务必将各个年份的年报 文件夹 放到一个大的 文件夹 中，并填入此文件夹的内容，请不要存放其他非年报文件。
     # 输入根文件夹路径，建议输入绝对路径，如“D:/数据集/上市公司爬虫/年报文件夹”
-    root_folder = "/Users/wangjialong/PycharmProjects/Annualreport_tools/年报文件"
+    root_folder = "/PycharmProjects/Annualreport_tools/年报文件"
     # 输入年份区间
     start_year = "2010"
     end_year = "2022"

@@ -203,7 +203,7 @@ if __name__ == '__main__':
     global counter
     global sum
     counter = 1  # 计数器
-    setYear = 2020 #设置下载年份
+    setYear = 2023 #设置下载年份
     Flag = 0  #是否开启批量下载模式
     if Flag:
         for setYear in range(2002,2023):

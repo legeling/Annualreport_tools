@@ -25,12 +25,15 @@ def extract_keywords(content, keywords):
         # 使用jieba库进行分词
         words = jieba.cut(content)
         words = [word for word in words if word.strip()]
-
+        # 使用正则表达式去除标点符号、数字、英文、空格等非中文字符
+        content_non = re.sub(r'[^\u4e00-\u9fa5]', '', content)
+        words_non = jieba.cut(content_non)
+        words_non = [word for word in words_non if word.strip()]
         # 统计关键词出现次数
         for i, keyword in enumerate(keywords):
             keyword_counts[i] = words.count(keyword)
 
-        total_words = len(words)
+        total_words = len(words_non)
 
     except Exception as e:
         print("从文件中获取关键词失败")
@@ -45,7 +48,7 @@ def process_files(folder_path, keywords):
         row = 0
         # 添加Excel表头
         worksheet.write(row, 0, '文件名')
-        worksheet.write(row, 1, '总字数')
+        worksheet.write(row, 1, '总词数')
         for i, keyword in enumerate(keywords):
             worksheet.write(row, i + 2, keyword)
         row += 1
@@ -62,12 +65,12 @@ def process_files(folder_path, keywords):
                     with open(file_path, 'r', encoding='utf-8') as f:
                         content = f.read()
 
-                    # 提取关键词并统计词频和总字数
+                    # 提取关键词并统计词频和总词数
                     keyword_counts, total_words = extract_keywords(content, keywords)
 
                     # 将结果写入Excel表格
                     worksheet.write(row, 0, os.path.splitext(filename)[0])  # 使用文件名去除后缀
-                    worksheet.write(row, 1, total_words)  # 总字数
+                    worksheet.write(row, 1, total_words)  # 总词数
                     for i, count in enumerate(keyword_counts):
                         worksheet.write(row, i + 2, count)
                     row += 1
@@ -99,6 +102,6 @@ if __name__ == '__main__':
     # 设置要提取的关键词列表
     keywords = ['人工智能', '数字资产', '数据', '资产', '智能数据分', '大数据', '数据挖掘', '文本挖掘']
     # 输入文件夹路径
-    folder_path = "D:/数据集/上市公司爬虫/年报文件"
+    folder_path = "/Users/wangjialong/PycharmProjects/Annualreport_tools/词频分析工具"
     # 处理文件夹中的所有txt文件，并将结果存储到Excel表格中
     process_files(folder_path, keywords)
