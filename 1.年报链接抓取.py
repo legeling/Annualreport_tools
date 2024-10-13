@@ -41,9 +41,9 @@ def get_report(page_num,date):
         "column": "szse",
         "tabName": "fulltext",
         "plate": plate,
-        "searchkey": "",
+        "searchkey": "独立董事辞职",
         "secid": "",
-        "category": "category_ndbg_szsh",
+        "category": "",
         "trade": trade,
         "seDate": date,
         "sortName": "code",
@@ -54,77 +54,79 @@ def get_report(page_num,date):
     return response
 
 # 发送HTTP请求并获取响应
-def downlaod_report(date):
+import requests
+import time
+
+
+def download_report(date):
     global counter
     all_results = []
     page_num = 1
-    response_test = get_report(page_num,date)
-    data_test = response_test.json()
-    total_pages = data_test["totalpages"]
-    max_retries = 3 #最大重试次数
-    retry_count = 0 #当前重试次数
-    while page_num <= total_pages:
-        response = None
+    response_test = get_report(page_num, date)
 
-        # 重试机制
+    try:
+        data_test = response_test.json()
+        total_pages = data_test["totalpages"]
+
+        # 检查total_pages是否为0
+        if total_pages == 0:
+            return all_results  # 提前返回空结果
+
+    except (ValueError, KeyError) as e:
+        print(f"获取总页数失败: {e}")
+        return all_results  # 提前返回空结果
+
+    max_retries = 3  # 最大重试次数
+
+    while page_num <= total_pages+1:  # 多处理一页
+        retry_count = 0  # 当前重试次数
         while retry_count <= max_retries:
-            # 发送请求
             try:
-                # response = requests.post(url, data=data,headers=headers)
-                response = get_report(page_num,date)
+                # 请求报告数据
+                response = get_report(page_num, date)
                 response.raise_for_status()
+                data = response.json()
+
+                # 解析并处理数据
+                if data["announcements"] is None:
+                    raise Exception("公告数据为空")
+                else:
+                    all_results.extend(data["announcements"])
+
+                # 计算进度时，检查total_pages是否为0
+                if total_pages > 0:
+                    per = (counter / total_pages)
+                    if per < 1:
+                        print(f"\r当前年份下载进度 {per * 100:.2f} %", end='')
+                    else:
+                        print(f"\r下载完成，正在保存……", end='')
+                else:
+                    print("无法计算下载进度，总页数为0。")
+
+                # 跳出重试循环
                 break
+
             except requests.exceptions.RequestException as e:
-                print(f"出现错误！: {e}")
+                print(f"出现网络请求错误！: {e}")
                 print(f"5秒后重试...")
                 time.sleep(5)
                 retry_count += 1
 
-        if retry_count > max_retries:
-            print(f"{max_retries} 次重试后均失败. 跳过第 {page_num}页.")
-            page_num += 1
-            retry_count = 0
-            continue
-        else:
-            # 解析数据
-            try:
-                data = response.json()
-
-                per = (counter/sum)
-                if  per <1:
-                    print(f"\r当前年份下载进度 {per*100:.2f} %",end='')
-                else:
-                    print(f"\r下载完成，正在保存……", end='')
-                # 尝试解析公告数据，如果解析失败则重试
-                retry_count = 0
-                while True:
-                    try:
-                        if data["announcements"] is None:
-                            raise Exception("公告数据为空")
-                        else:
-                            all_results.extend(data["announcements"])
-                        break
-                    except (TypeError, KeyError) as e:
-                        print(f"解析公告数据失败: {e}")
-                        print(f"5秒后重试...")
-                        time.sleep(5)
-                        retry_count += 1
-                        if retry_count > max_retries:
-                            raise Exception("达到最大重试次数，跳过此页")
-                        continue
-                page_num += 1
-                counter +=1
             except (ValueError, KeyError) as e:
                 print(f"解析响应数据失败: {e}")
                 print(f"5秒后重试...")
                 time.sleep(5)
                 retry_count += 1
-                if retry_count > max_retries:
-                    raise Exception("达到最大重试次数，跳过此页")
-                continue
+
+            # 如果达到最大重试次数，跳过此页
+            if retry_count > max_retries:
+                print(f"{max_retries}次重试后均失败. 跳过第{page_num}页.")
+                break
+
+        page_num += 1
+        counter += 1  # 更新处理进度
+
     return all_results
-
-
 def main(year):
     # 计数器
     global sum
@@ -148,7 +150,7 @@ def main(year):
         f"{year}-12-01~{year}-12-31"
     ]
     for i in time_segments:
-        results = downlaod_report(i)
+        results = download_report(i)
         all_results.extend(results)
 
 
@@ -194,7 +196,7 @@ def main(year):
 if __name__ == '__main__':
     # 全局变量
     # 排除列表可以加入'更正后','修订版'来规避数据重复或公司发布之前年份的年报修订版等问题，
-    exclude_keywords = ['英文','已取消','公告','摘要']
+    exclude_keywords = ['英文','已取消','摘要']
     # 控制行业，若为空则不控制，仅可从参考内容中选取，中间用英文分号隔开
     # 参考内容："农、林、牧、渔业;电力、热力、燃气及水生产和供应业;建筑业;采矿业;制造业;批发和零售业;交通运输、仓储和邮政业;住宿和餐饮业;信息传输、软件和信息技术服务业;金融业;房地产业;租赁和商务服务业;科学研究和技术服务业;水利、环境和公共设施管理业;居民服务、修理和其他服务业;教育;卫生和社会工作;文化、体育和娱乐业;综合"
     trade = ""
