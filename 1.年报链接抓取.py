@@ -41,7 +41,7 @@ def get_report(page_num,date):
         "column": "szse",
         "tabName": "fulltext",
         "plate": plate,
-        "searchkey": "独立董事辞职",
+        "searchkey": "",
         "secid": "",
         "category": "",
         "trade": trade,
