@@ -43,7 +43,7 @@ def get_report(page_num,date):
         "plate": plate,
         "searchkey": "",
         "secid": "",
-        "category": "",
+        "category": "category_ndbg_szsh",
         "trade": trade,
         "seDate": date,
         "sortName": "code",
