@@ -113,9 +113,9 @@ if __name__ == '__main__':
             # 2024年02月14日更新后，此处只需要填写总表的路径，请于网盘或者github中获取总表
             file_name = f"年报链接2002-2023.xlsx"
             # 创建存储文件的文件夹路径，如有需要请修改
-            pdf_dir = f'年报文件/{year}/pdf年报'
+            pdf_dir = f'年报文件/{year}/pdf年报' 
             txt_dir = f'年报文件/{year}/txt年报'
-            main(file_name,pdf_dir,txt_dir,flag_pdf.year)
+            main(file_name,pdf_dir,txt_dir,flag_pdf,year)
             print(f"{year}年年报处理完毕，若报错，请检查后重新运行")
     else:
         #处理单独年份：
