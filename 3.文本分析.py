@@ -10,9 +10,7 @@ import re
 import xlwt
 import jieba
 
-
 def extract_keywords(filename, keywords):
-
     keyword_counts = [0] * len(keywords)
     total_words = 0  # 统计文章的总词数
 
@@ -177,13 +175,13 @@ def process_files(folder_path, keywords, start_year=None, end_year=None):
 if __name__ == '__main__':
     # 设置要提取的关键词列表
     keywords = [
-        '人工智能', '商业智能', '图像理解','投资决策辅助系统', '智能数据分', '大数据', '数据挖掘', '文本挖掘' ]
+        '人工智能','商业智能', '图像理解','投资决策辅助系统', '智能数据分', '大数据', '数据挖掘', '文本挖掘' ]
     # !!!!!注意，请务必将各个年份的年报 文件夹 放到一个大的 文件夹 中，并填入此文件夹的内容，请不要存放其他非年报文件。
     # 输入根文件夹路径，建议输入绝对路径，如“D:/数据集/上市公司爬虫/年报文件夹”
     root_folder = "年报文件"
     # 输入年份区间
-    start_year = "2010"
-    end_year = "2023"
+    start_year = "2023"
+    end_year = "2024"
 
     # 输入处理结果的文件名
     name = "词频分析结果.xls"

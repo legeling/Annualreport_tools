@@ -138,15 +138,15 @@ def main(file_name,pdf_dir,txt_dir,flag_pdf,year):
 
 if __name__ == '__main__':
     # 是否删除pdf文件，True为是，False为否
-    flag_pdf = True
+    flag_pdf = False
     # 是否批量处理多个年份，True为是，False为否
     Flag = True
     if Flag:
         #批量下载并转换年份区间
-        for year in range(2022,2023):
+        for year in range(2022,2025):
             # ===========Excel表格路径，建议使用绝对路径，请自行修改！！！！！！！===========
             # 2024年02月14日更新后，此处只需要填写总表的路径，请于网盘或者github中获取总表
-            file_name = f"年报链接截至2023.xlsx"
+            file_name = f"年报链接_2024【公众号：凌小添】.xlsx"
             # 创建存储文件的文件夹路径，如有需要请修改
             pdf_dir = f'年报文件/{year}/pdf年报'
             txt_dir = f'年报文件/{year}/txt年报'
