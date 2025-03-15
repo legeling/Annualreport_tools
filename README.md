@@ -8,8 +8,8 @@
 
 ## 1. 快速上手
 
-[点击此处查看教程内容](https://github.com/legeling/Annualreport_tools/wiki/%E4%BB%A3%E7%A0%81%E6%9B%B4%E6%96%B0%E6%8F%90%E9%86%92%EF%BC%81%EF%BC%81)
-
+[点击此处查看教程内容](https://github.com/legeling/Annualreport_tools/wiki/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B)
+[详细讲解请查看wiki页](https://github.com/legeling/Annualreport_tools/wiki/1.%E5%B9%B4%E6%8A%A5%E9%93%BE%E6%8E%A5%E7%88%AC%E5%8F%96)
 ## 2. 更新日志
 ### 2025/3/15
 * [x] 小型更新，加入依赖文件,更新下载模块，现在可以下载其他公告了！
