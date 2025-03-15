@@ -12,7 +12,7 @@ import requests
 import re
 import openpyxl
 import time
-
+from urllib.parse import quote
 
 GZH = "【公众号：凌小添】"
 def get_report(page_num,date):
@@ -80,7 +80,7 @@ def download_report(date):
 
                 # 解析并处理数据
                 if data["announcements"] is None:
-                    raise Exception("公告数据为空")
+                    break
                 else:
                     all_results.extend(data["announcements"])
 
@@ -185,21 +185,23 @@ def main(year):
 
 
 if __name__ == '__main__':
-    # 全局变量
     # 排除列表可以加入'更正后','修订版'来规避数据重复或公司发布之前年份的年报修订版等问题，
     exclude_keywords = ['英文','已取消','摘要']
     # 控制行业，若为空则不控制，仅可从参考内容中选取，中间用英文分号隔开
     # 参考内容："农、林、牧、渔业;电力、热力、燃气及水生产和供应业;建筑业;采矿业;制造业;批发和零售业;交通运输、仓储和邮政业;住宿和餐饮业;信息传输、软件和信息技术服务业;金融业;房地产业;租赁和商务服务业;科学研究和技术服务业;水利、环境和公共设施管理业;居民服务、修理和其他服务业;教育;卫生和社会工作;文化、体育和娱乐业;综合"
+    trade_text = ""
+    # trade = quote(trade_text, encoding='utf-8')
     trade = ""
+
     # 板块控制：深市sz 沪市sh 深主板szmb 沪主板shmb 创业板szcy 科创板shkcp 北交所bj 请按照格式填写
     plate = "sz;sh"
     global counter
     global sum
     counter = 1  # 计数器
-    setYear = 2023 #设置下载年份
+    setYear = 2024 #设置下载年份
     Flag = 0  #是否开启批量下载模式
     if Flag:
-        for setYear in range(2002,2023):
+        for setYear in range(2020,2024):
             counter = 1  # 计数器
             main(setYear)
             print(f"----{setYear}年下载完成")

@@ -128,7 +128,7 @@ def main(file_name,pdf_dir,txt_dir,flag_pdf,year):
             txt_file_name = f"{code:06}_{name}_{year}.txt"
             txt_file_path = os.path.join(txt_dir, txt_file_name)
             if os.path.exists(txt_file_path):
-                logging.info(f"{txt_file_name} 已存在，跳过.")
+                logging.info(f"{txt_file_name} ▶️ 已存在，跳过.")
             else:
                 pool.apply_async(convert, args=(code, name, year, pdf_url, pdf_dir, txt_dir, flag_pdf))
 
@@ -143,7 +143,7 @@ if __name__ == '__main__':
     Flag = True
     if Flag:
         #批量下载并转换年份区间
-        for year in range(2013,2023):
+        for year in range(2022,2023):
             # ===========Excel表格路径，建议使用绝对路径，请自行修改！！！！！！！===========
             # 2024年02月14日更新后，此处只需要填写总表的路径，请于网盘或者github中获取总表
             file_name = f"年报链接截至2023.xlsx"
