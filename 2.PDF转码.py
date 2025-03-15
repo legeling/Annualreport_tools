@@ -21,16 +21,51 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 #下载模块
 def download_pdf(pdf_url, pdf_file_path):
     try:
-        with requests.get(pdf_url, stream=True, timeout=10) as r:
-            r.raise_for_status()
-            with open(pdf_file_path, 'wb') as f:
-                for chunk in r.iter_content(chunk_size=8192):
-                    f.write(chunk)
-    except requests.exceptions.RequestException as e:
-        logging.error(f"下载PDF文件失败：{e}")
-        return False
-    else:
+        headers = {
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+            "Cache-Control": "no-cache",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "same-origin",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        }
+
+        session = requests.Session()
+        session.headers.update(headers)
+
+        # 请求PDF文件
+        response = session.get(pdf_url, stream=True, timeout=15)
+        # 检查HTTP状态码
+        if response.status_code == 403:
+            logging.error(f"❌ 403 Forbidden: 服务器禁止访问 {pdf_url}")
+            return False
+        elif response.status_code != 200:
+            logging.error(f"❌ 请求失败: {response.status_code} - {response.text[:500]}")
+            return False
+        content_type = response.headers.get("Content-Type", "")
+        if "pdf" not in content_type.lower():
+            logging.error(f"❌ 服务器返回的不是 PDF: {content_type}")
+            return False
+        # 写入PDF文件
+        with open(pdf_file_path, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        # 验证文件是否为PDF
+        if os.path.exists(pdf_file_path) and os.path.getsize(pdf_file_path) > 0:
+            with open(pdf_file_path, "rb") as f:
+                first_bytes = f.read(5)
+                if not first_bytes.startswith(b"%PDF"):
+                    logging.error(f"❌ 下载的文件不是 PDF！可能是 HTML 错误页面，请检查 {pdf_file_path}")
+                    return False
+        else:
+            logging.error(f"❌ 下载失败，文件大小为 0 KB: {pdf_file_path}")
+            return False
+        logging.info(f"✅ PDF 下载成功: {pdf_file_path}")
         return True
+    except requests.exceptions.RequestException as e:
+        logging.error(f"❌ 下载 PDF 文件失败: {e}")
+        return False
 
 #文件转换
 def convert(code, name, year, pdf_url, pdf_dir, txt_dir, flag_pdf):
@@ -105,15 +140,15 @@ if __name__ == '__main__':
     # 是否删除pdf文件，True为是，False为否
     flag_pdf = True
     # 是否批量处理多个年份，True为是，False为否
-    Flag = False
+    Flag = True
     if Flag:
         #批量下载并转换年份区间
-        for year in range(2004,2022):
+        for year in range(2013,2023):
             # ===========Excel表格路径，建议使用绝对路径，请自行修改！！！！！！！===========
             # 2024年02月14日更新后，此处只需要填写总表的路径，请于网盘或者github中获取总表
-            file_name = f"年报链接2002-2023.xlsx"
+            file_name = f"年报链接截至2023.xlsx"
             # 创建存储文件的文件夹路径，如有需要请修改
-            pdf_dir = f'年报文件/{year}/pdf年报' 
+            pdf_dir = f'年报文件/{year}/pdf年报'
             txt_dir = f'年报文件/{year}/txt年报'
             main(file_name,pdf_dir,txt_dir,flag_pdf,year)
             print(f"{year}年年报处理完毕，若报错，请检查后重新运行")

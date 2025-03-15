@@ -30,11 +30,6 @@ def get_report(page_num,date):
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42",
         "X-Requested-With": "XMLHttpRequest"
     }
-    '''
-    参数列表
-     plate: sz;sh, 表示沪深两市
-     seDate：查询时间
-    '''
     data = {
         "pageNum": page_num,
         "pageSize": 30,
@@ -54,10 +49,6 @@ def get_report(page_num,date):
     return response
 
 # 发送HTTP请求并获取响应
-import requests
-import time
-
-
 def download_report(date):
     global counter
     all_results = []

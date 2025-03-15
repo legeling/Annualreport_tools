@@ -183,7 +183,7 @@ if __name__ == '__main__':
     root_folder = "/PycharmProjects/Annualreport_tools/年报文件"
     # 输入年份区间
     start_year = "2010"
-    end_year = "2022"
+    end_year = "2023"
 
     # 输入处理结果的文件名
     name = "词频分析结果.xlsx"
