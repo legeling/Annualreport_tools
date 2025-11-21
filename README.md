@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/legeling/Annualreport_tools/main/res/icon.svg" width="96" alt="Annualreport Tools Icon" />
+  <img src="https://raw.githubusercontent.com/legeling/Annualreport_tools/main/imgs/icon.svg" width="96" alt="Annualreport Tools Icon" />
   <h1>Annualreport_tools · Annual Report Toolkit</h1>
   <p>Fetch CNINFO annual reports, batch download PDFs, convert to TXT, and run keyword analytics in minutes.</p>
   <p>
@@ -21,9 +21,14 @@
 ---
 
 ## Disclaimer
-- This project is **for research and educational purposes only**. Do not use it for unlawful scraping or commercial redistribution.
-- Please **prefer the curated cloud-drive dataset** that already contains downloaded annual reports. Avoid hammering CNINFO with frequent crawls; respect the source website and relevant regulations.
-- You are solely responsible for any data collection behavior triggered by these scripts.
+
+**Important Notice:**
+
+- This project is **for research and educational purposes only**. Do not use it for unlawful scraping, commercial redistribution, or any activities that violate applicable laws and regulations.
+- Please **prefer the curated cloud-drive dataset** (`./res/AnnualReport_links_2004_2023.xlsx`) that already contains downloaded annual reports. Avoid hammering CNINFO with frequent crawls; respect the source website's resources and relevant regulations.
+- **Rate limiting is crucial**: The crawler implements daily segmentation to minimize server load. Please do not modify the code to increase request frequency.
+- You are **solely responsible** for any data collection behavior triggered by these scripts. The author assumes no liability for misuse.
+- By using this toolkit, you acknowledge that you have read and agreed to this disclaimer.
 
 ## Key Features
 1. **report_link_crawler.py** – segmented CNINFO queries across boards/industries to stay stable under rate limits.
@@ -90,8 +95,17 @@ pip install -r requirements.txt
 Issues & PRs are welcome! Share feature ideas, bug reports, or best practices with the community.
 
 ## Support
-[爱发电 · 感谢支持](https://afdian.net/a/NBFX1)
+
+If this project helps your research or work, consider buying me a coffee! Your support keeps the project alive and motivates further improvements.
 
 <div align="center">
-  <img width="280" src="https://github.com/legeling/-/blob/main/afdian-%E5%87%8C%E5%B0%8F%E6%B7%BB.jpg?raw=true" alt="Donate QR"/>
+  <a href="https://www.buymeacoffee.com/lingxiaotian">
+    <img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-orange?style=for-the-badge&logo=buy-me-a-coffee" alt="Buy Me A Coffee"/>
+  </a>
+</div>
+
+<div align="center">
+  <p><strong>Or scan WeChat QR code:</strong></p>
+  <img width="280" src="https://raw.githubusercontent.com/legeling/Annualreport_tools/main/imgs/wechat.jpg" alt="WeChat Donate QR"/>
+  <p><em>Every contribution is appreciated! Thank you for your support!</em></p>
 </div>
