@@ -1,39 +1,97 @@
-<div align=center><img src="https://cdn.nlark.com/yuque/0/2023/png/22569186/1684745335675-3954e453-98c6-4004-9643-fc913f90b01b.png?x-oss-process=image%2Fresize%2Cw_1401%2Climit_0"/></div>
+<div align="center">
+  <img src="https://raw.githubusercontent.com/legeling/Annualreport_tools/main/res/icon.svg" width="96" alt="Annualreport Tools Icon" />
+  <h1>Annualreport_tools · Annual Report Toolkit</h1>
+  <p>Fetch CNINFO annual reports, batch download PDFs, convert to TXT, and run keyword analytics in minutes.</p>
+  <p>
+    <a href="https://github.com/legeling/Annualreport_tools/stargazers"><img src="https://img.shields.io/github/stars/legeling/Annualreport_tools?style=flat-square" alt="GitHub Stars"/></a>
+    <a href="https://github.com/legeling/Annualreport_tools/network/members"><img src="https://img.shields.io/github/forks/legeling/Annualreport_tools?style=flat-square" alt="GitHub Forks"/></a>
+    <a href="https://github.com/legeling/Annualreport_tools/watchers"><img src="https://img.shields.io/github/watchers/legeling/Annualreport_tools?style=flat-square" alt="GitHub Watchers"/></a>
+    <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python Version"/>
+    <a href="https://github.com/legeling/Annualreport_tools/issues"><img src="https://img.shields.io/github/issues/legeling/Annualreport_tools?style=flat-square" alt="GitHub Issues"/></a>
+  </p>
+</div>
 
-# Annualreport_tools
-一个用于爬取上市公司年报，下载PDF文件，并将格式转为TXT文本便于词频分析的小工具
+<p align="center">
+  <a href="./docs/README.en.md">English</a> ·
+  <a href="./docs/README.zh.md">简体中文</a>
+</p>
 
+![Demo Screenshot](https://cdn.nlark.com/yuque/0/2023/png/22569186/1684739594091-379cdf84-28f5-4998-835f-7c9555fddac7.png#averageHue=%23a8c1db&clientId=uc29edf23-5138-4&from=paste&height=687&id=ua755022a&originHeight=1374&originWidth=2560&originalType=binary&ratio=2&rotation=0&showTitle=false&size=944474&status=done&style=none&taskId=ucc34614d-4b0d-48dc-a316-949d41f13b8&title=&width=1280)
 
-![image.png](https://cdn.nlark.com/yuque/0/2023/png/22569186/1684739594091-379cdf84-28f5-4998-835f-7c9555fddac7.png#averageHue=%23a8c1db&clientId=uc29edf23-5138-4&from=paste&height=687&id=ua755022a&originHeight=1374&originWidth=2560&originalType=binary&ratio=2&rotation=0&showTitle=false&size=944474&status=done&style=none&taskId=ucc34614d-4b0d-48dc-a316-949d41f13b8&title=&width=1280)
+---
 
-## 1. 快速上手
+## Disclaimer
+- This project is **for research and educational purposes only**. Do not use it for unlawful scraping or commercial redistribution.
+- Please **prefer the curated cloud-drive dataset** that already contains downloaded annual reports. Avoid hammering CNINFO with frequent crawls; respect the source website and relevant regulations.
+- You are solely responsible for any data collection behavior triggered by these scripts.
 
-[点击此处查看教程内容](https://github.com/legeling/Annualreport_tools/wiki/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B)
-[详细讲解请查看wiki页](https://github.com/legeling/Annualreport_tools/wiki/1.%E5%B9%B4%E6%8A%A5%E9%93%BE%E6%8E%A5%E7%88%AC%E5%8F%96)
-## 2. 更新日志
-### 2025/3/15
-* [x] 小型更新，加入依赖文件,更新下载模块，现在可以下载其他公告了！
-### 2024/10/13
-* [x] 重大修复，修复了获取公司不全的问题
-### 2024/2/14
-* [x] 上传了总表，不再需要众多的表格文件了！
-* [x] 优化了代码逻辑，提高可读性
-### 2024/1/04
-* [x] 优化词频分析精度，大大提高统计准确度
-* [x] 增加通用词频分析代码~~
-### 2023/5/25
-* [x] 代码逻辑全面更新
-* [x] 提供更多可调整参数
-### 2023/4/20
-* [x] 项目提交
+## Key Features
+1. **report_link_crawler.py** – segmented CNINFO queries across boards/industries to stay stable under rate limits.
+2. **pdf_batch_converter.py** – resilient PDF downloader with MIME verification + conversion to TXT.
+3. **text_analysis.py** – multiprocess keyword analyzer + Excel export.
+4. **text_analysis_universal.py** – lightweight analyzer that accepts any TXT directory.
+5. **Res assets (`/res`)** – curated annual report master sheet & icon assets for docs.
+6. **Docs folder** – bilingual documentation stored under `docs/` for easy switching.
 
+## Quick Start
+1. Install dependencies: `pip install -r requirements.txt`
+2. Run `report_link_crawler.py` (or reuse `./res/AnnualReport_links_2004_2023.xlsx`) to prepare annual-report links.
+3. Execute `pdf_batch_converter.py` to download PDFs and convert them to TXT; optionally delete the original PDFs afterward.
+4. Launch `text_analysis.py` (multiprocess) or `text_analysis_universal.py` to produce keyword totals + overall word counts in Excel.
+5. Check the [Wiki](https://github.com/legeling/Annualreport_tools/wiki) or `docs/` for language-specific walkthroughs.
 
-## 3. Todo
-* [ ] GUI界面
-* [ ] 数据库保存数据
-* [ ] 云平台词频分析
+## Module Overview
+| Script / Asset | Description |
+| --- | --- |
+| `report_link_crawler.py` | CNINFO crawler with board/industry filters and retry logic |
+| `pdf_batch_converter.py` | Batch download + pdfplumber conversion with file validation |
+| `text_analysis.py` | Multiprocess keyword analytics with Excel export |
+| `text_analysis_universal.py` | Lightweight analyzer for arbitrary TXT folders |
+| `./res/AnnualReport_links_2004_2023.xlsx` | Curated master sheet covering 2004-2023 |
 
-## [爱发电](https://afdian.net/a/NBFX1)
+## Script Index (Legacy Numbering)
+1. `report_link_crawler.py`（原 `1.年报链接抓取.py`）
+2. `pdf_batch_converter.py`（原 `2.PDF转码.py`）
+3. `text_analysis.py`（原 `3.文本分析.py`）
+4. `text_analysis_universal.py`（原 `文本分析-universal.py`）
 
-[感谢投喂](https://afdian.net/a/NBFX1) 
-<img width="365px" height="450px" src="https://github.com/legeling/-/blob/main/afdian-%E5%87%8C%E5%B0%8F%E6%B7%BB.jpg?raw=true">
+## Requirements
+```
+pip install -r requirements.txt
+```
+
+## Multilingual Docs
+- [docs/README.en.md](./docs/README.en.md) — English (full version)
+- [docs/README.zh.md](./docs/README.zh.md) — 简体中文版本
+
+## Star History
+[![Star History Chart](https://api.star-history.com/svg?repos=legeling/Annualreport_tools&type=Date)](https://star-history.com/#legeling/Annualreport_tools&Date)
+
+## Changelog
+| Date | Highlights |
+| --- | --- |
+| 2025/11/21 | Code optimization: added type hints, improved error handling, enhanced robustness across all scripts |
+| 2025/11/21 | README switched to English default + disclaimer, multiprocess analyzer, docs folder added |
+| 2025/03/15 | Added requirements file, downloader now supports other announcements |
+| 2024/10/13 | Fixed missing companies in crawler results |
+| 2024/02/14 | Uploaded master sheet, improved readability |
+| 2024/01/04 | Improved keyword accuracy, added universal analyzer |
+| 2023/05/25 | Full refactor with parameterized workflow |
+| 2023/04/20 | Initial commit |
+
+## TODO
+- [ ] GUI / desktop front-end
+- [ ] Persist data into PostgreSQL / DuckDB for further analysis
+- [ ] Cloud keyword analysis & API endpoints
+- [ ] Automated scheduling + alerting (GitHub Actions / cron)
+- [x] Bilingual docs & project metrics
+
+## Contributing
+Issues & PRs are welcome! Share feature ideas, bug reports, or best practices with the community.
+
+## Support
+[爱发电 · 感谢支持](https://afdian.net/a/NBFX1)
+
+<div align="center">
+  <img width="280" src="https://github.com/legeling/-/blob/main/afdian-%E5%87%8C%E5%B0%8F%E6%B7%BB.jpg?raw=true" alt="Donate QR"/>
+</div>

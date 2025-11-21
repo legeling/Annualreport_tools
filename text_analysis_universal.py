@@ -7,28 +7,41 @@
 @Author  ：lingxiaotian
 @Date    ：2024/1/3 19:45 
 '''
+
+from __future__ import annotations
+
+import logging
 import os
 import re
-import xlwt
+from typing import List, Tuple
+
 import jieba
+import xlwt
+
+# 日志配置
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-def extract_keywords(content, keywords):
+def extract_keywords(content: str, keywords: List[str]) -> Tuple[List[int], int]:
+    """提取文本中的关键词并统计词频。
+    
+    Args:
+        content: 文本内容
+        keywords: 关键词列表
+        
+    Returns:
+        关键词计数列表和总词数的元组
+    """
     keyword_counts = [0] * len(keywords)
     total_words = 0
 
     try:
-        # 将关键词添加到自定义词典
-        for word in keywords:
-            jieba.add_word(word)
-
         # 使用jieba库进行分词
-        words = jieba.cut(content)
-        words = [word for word in words if word.strip()]
+        words = [word for word in jieba.cut(content) if word.strip()]
         # 使用正则表达式去除标点符号、数字、英文、空格等非中文字符
         content_non = re.sub(r'[^\u4e00-\u9fa5]', '', content)
-        words_non = jieba.cut(content_non)
-        words_non = [word for word in words_non if word.strip()]
+        words_non = [word for word in jieba.cut(content_non) if word.strip()]
+        
         # 统计关键词出现次数
         for i, keyword in enumerate(keywords):
             keyword_counts[i] = words.count(keyword)
@@ -36,16 +49,32 @@ def extract_keywords(content, keywords):
         total_words = len(words_non)
 
     except Exception as e:
-        print("从文件中获取关键词失败")
-        print(str(e))
+        logging.error(f"提取关键词失败: {e}")
 
     return keyword_counts, total_words
-def process_files(folder_path, keywords):
+def process_files(folder_path: str, keywords: List[str]) -> None:
+    """处理文件夹中的所有txt文件，统计关键词并保存到Excel。
+    
+    Args:
+        folder_path: 文件夹路径
+        keywords: 关键词列表
+    """
     try:
+        # 检查文件夹是否存在
+        if not os.path.exists(folder_path):
+            logging.error(f"文件夹不存在: {folder_path}")
+            return
+            
+        # 将关键词一次性添加到jieba自定义词典
+        for word in keywords:
+            jieba.add_word(word)
+        logging.info(f"已加载 {len(keywords)} 个关键词到jieba词典")
+        
         # 创建Excel工作簿
         workbook = xlwt.Workbook(encoding='utf-8')
         worksheet = workbook.add_sheet('关键词统计')
         row = 0
+        
         # 添加Excel表头
         worksheet.write(row, 0, '文件名')
         worksheet.write(row, 1, '总词数')
@@ -74,34 +103,41 @@ def process_files(folder_path, keywords):
                     for i, count in enumerate(keyword_counts):
                         worksheet.write(row, i + 2, count)
                     row += 1
+                    
+                    logging.info(f"已处理: {filename}")
 
+                except OSError as e:
+                    logging.error(f"读取文件失败: {file_path} - {e}")
                 except Exception as e:
-                    print(f"处理文件失败: {file_path}")
-                    print(str(e))
+                    logging.error(f"处理文件失败: {file_path} - {e}")
 
         if total_files == 0:
-            print(f"文件夹内没有找到任何txt文件，请检查路径：{folder_path}")
+            logging.warning(f"文件夹内没有找到任何txt文件，请检查路径：{folder_path}")
             return
 
         # 保存Excel文件
         try:
-            excel_file = os.path.join(folder_path, '关键词统计结果.xlsx')
+            excel_file = os.path.join(folder_path, '关键词统计结果.xls')
             workbook.save(excel_file)
-            print(f"\nExcel文件保存成功，请到下面路径查看: {excel_file}")
+            logging.info(f"Excel文件保存成功: {excel_file}")
+            print(f"\n✅ 处理完成！共处理 {total_files} 个文件")
+            print(f"📊 结果已保存到: {excel_file}")
         except Exception as e:
-            print("\n保存Excel文件失败。")
-            print(str(e))
+            logging.error(f"保存Excel文件失败: {e}")
 
     except Exception as e:
-        print(f"处理文件夹失败: {folder_path}")
-        print(str(e))
+        logging.error(f"处理文件夹失败: {folder_path} - {e}")
 
 
 
 if __name__ == '__main__':
-    # 设置要提取的关键词列表
+    # 设置要提取的关键词列表（可根据需要修改）
     keywords = ['人工智能', '数字资产', '数据', '资产', '智能数据分', '大数据', '数据挖掘', '文本挖掘']
-    # 输入文件夹路径
+    
+    # 输入文件夹路径（请修改为实际路径）
     folder_path = "/Users/wangjialong/PycharmProjects/Annualreport_tools/词频分析工具"
+    
     # 处理文件夹中的所有txt文件，并将结果存储到Excel表格中
+    logging.info("开始处理文件...")
     process_files(folder_path, keywords)
+    logging.info("处理完成")

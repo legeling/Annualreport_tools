@@ -1,0 +1,16 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Annualreport Tools Icon">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f8cff" />
+      <stop offset="100%" stop-color="#00c2b8" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="16" fill="url(#grad)" />
+  <g fill="#ffffff">
+    <path d="M32 40h64v12H32z" opacity="0.85" />
+    <path d="M32 60h48v12H32z" opacity="0.85" />
+    <path d="M32 80h36v12H32z" opacity="0.85" />
+    <circle cx="88" cy="86" r="10" fill="none" stroke="#ffffff" stroke-width="4" />
+    <path d="M94 92l10 10" stroke="#ffffff" stroke-width="4" stroke-linecap="round" />
+  </g>
+</svg>

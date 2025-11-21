@@ -1,0 +1,44 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+.env
+.venv
+venv/
+env/
+
+# IDE / editor
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Logs and checkpoints
+*.log
+*.tmp
+*.bak
+*.orig
+
+# Data artifacts
+*.pdf
+*.PDF
+*.txt
+*.TXT
+!requirements.txt
+*.csv
+*.xlsx
+*.xlsm
+output/
+data/
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Misc
+*.zip
+*.tar
+*.tar.gz
