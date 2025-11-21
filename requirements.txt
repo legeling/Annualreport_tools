@@ -4,3 +4,8 @@ pandas==2.2.3
 pdfplumber==0.11.5
 Requests==2.32.3
 xlwt==1.3.0
+
+# Optional: Backup PDF processing libraries
+# Install these for better PDF compatibility and fallback support
+PyPDF2>=3.0.0
+pdfminer.six>=20221105

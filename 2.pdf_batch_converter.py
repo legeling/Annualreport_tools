@@ -12,6 +12,7 @@ from __future__ import annotations
 import logging
 import os
 import re
+import warnings
 from dataclasses import dataclass
 from multiprocessing import Pool, cpu_count
 from pathlib import Path
@@ -20,6 +21,24 @@ from typing import Optional, Tuple
 import pandas as pd
 import pdfplumber
 import requests
+
+# 尝试导入备用PDF处理库
+try:
+    from PyPDF2 import PdfReader
+    PYPDF2_AVAILABLE = True
+except ImportError:
+    PYPDF2_AVAILABLE = False
+    logging.warning("PyPDF2 not installed. Install with: pip install PyPDF2")
+
+try:
+    from pdfminer.high_level import extract_text as pdfminer_extract
+    PDFMINER_AVAILABLE = True
+except ImportError:
+    PDFMINER_AVAILABLE = False
+    logging.warning("pdfminer.six not installed. Install with: pip install pdfminer.six")
+
+# 抑制pdfplumber的CropBox警告
+warnings.filterwarnings('ignore', message='.*CropBox.*')
 
 # 日志配置
 logging.basicConfig(
@@ -164,8 +183,8 @@ class PDFConverter:
         logging.error(f"下载失败（已重试 {self.config.max_retries} 次）: {pdf_url}")
         return False
     
-    def _convert_pdf_to_txt(self, pdf_path: str, txt_path: str) -> bool:
-        """将PDF转换为TXT。"""
+    def _convert_with_pdfplumber(self, pdf_path: str, txt_path: str) -> bool:
+        """使用pdfplumber转换PDF（方法1）。"""
         try:
             with pdfplumber.open(pdf_path) as pdf:
                 with open(txt_path, 'w', encoding='utf-8') as f:
@@ -175,15 +194,75 @@ class PDFConverter:
                             if text:
                                 f.write(text)
                         except Exception as e:
-                            logging.warning(f"提取第 {page_num} 页失败: {e}")
+                            logging.debug(f"pdfplumber提取第 {page_num} 页失败: {e}")
                             continue
-            
-            logging.info(f"转换成功: {txt_path}")
             return True
-            
         except Exception as e:
-            logging.error(f"PDF转换失败 {pdf_path}: {e}")
+            logging.debug(f"pdfplumber转换失败: {e}")
             return False
+    
+    def _convert_with_pypdf2(self, pdf_path: str, txt_path: str) -> bool:
+        """使用PyPDF2转换PDF（方法2）。"""
+        if not PYPDF2_AVAILABLE:
+            return False
+        
+        try:
+            reader = PdfReader(pdf_path)
+            with open(txt_path, 'w', encoding='utf-8') as f:
+                for page_num, page in enumerate(reader.pages, 1):
+                    try:
+                        text = page.extract_text()
+                        if text:
+                            f.write(text)
+                    except Exception as e:
+                        logging.debug(f"PyPDF2提取第 {page_num} 页失败: {e}")
+                        continue
+            return True
+        except Exception as e:
+            logging.debug(f"PyPDF2转换失败: {e}")
+            return False
+    
+    def _convert_with_pdfminer(self, pdf_path: str, txt_path: str) -> bool:
+        """使用pdfminer.six转换PDF（方法3）。"""
+        if not PDFMINER_AVAILABLE:
+            return False
+        
+        try:
+            text = pdfminer_extract(pdf_path)
+            with open(txt_path, 'w', encoding='utf-8') as f:
+                f.write(text)
+            return True
+        except Exception as e:
+            logging.debug(f"pdfminer转换失败: {e}")
+            return False
+    
+    def _convert_pdf_to_txt(self, pdf_path: str, txt_path: str) -> bool:
+        """将PDF转换为TXT，使用多种库作为备用方案。
+        
+        尝试顺序：
+        1. pdfplumber（默认，最准确）
+        2. PyPDF2（备用方案1）
+        3. pdfminer.six（备用方案2）
+        """
+        # 方法1: pdfplumber
+        if self._convert_with_pdfplumber(pdf_path, txt_path):
+            logging.info(f"转换成功 (pdfplumber): {txt_path}")
+            return True
+        
+        logging.warning(f"pdfplumber转换失败，尝试备用方案: {pdf_path}")
+        
+        # 方法2: PyPDF2
+        if self._convert_with_pypdf2(pdf_path, txt_path):
+            logging.info(f"转换成功 (PyPDF2): {txt_path}")
+            return True
+        
+        # 方法3: pdfminer.six
+        if self._convert_with_pdfminer(pdf_path, txt_path):
+            logging.info(f"转换成功 (pdfminer): {txt_path}")
+            return True
+        
+        logging.error(f"所有PDF转换方法均失败: {pdf_path}")
+        return False
     
     def process_single_file(
         self,
