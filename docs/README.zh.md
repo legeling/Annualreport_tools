@@ -111,7 +111,7 @@ pip install -r requirements.txt
 如果这个项目对您的研究或工作有帮助，请考虑请我喝杯咖啡！您的支持让项目保持活力并激励进一步改进。
 
 <div align="center">
-  <a href="https://www.buymeacoffee.com/lingxiaotian">
+  <a href="https://www.buymeacoffee.com/legeling">
     <img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-orange?style=for-the-badge&logo=buy-me-a-coffee" alt="Buy Me A Coffee"/>
   </a>
 </div>
