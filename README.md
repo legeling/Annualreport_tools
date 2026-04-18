@@ -88,6 +88,20 @@ pip install -r requirements.txt
 
 [![Star History Chart](https://api.star-history.com/svg?repos=legeling/Annualreport_tools&type=Date)](https://star-history.com/#legeling/Annualreport_tools&Date)
 
+## 更新日志
+
+| 日期 | 亮点 |
+| --- | --- |
+| 2026/04/18 | 安全与稳定性加固：请求重试退避、下载域名校验、异常处理优化，文本分析性能优化 |
+| 2025/11/21 | 代码优化：添加类型提示，改进错误处理，增强所有脚本的鲁棒性 |
+| 2025/11/21 | README切换为英文默认 + 免责声明，多进程分析器，添加docs文件夹 |
+| 2025/03/15 | 添加requirements文件，下载器现在支持其他公告 |
+| 2024/10/13 | 修复爬虫结果中缺失公司的问题 |
+| 2024/02/14 | 上传主表，改进可读性 |
+| 2024/01/04 | 改进关键词准确性，添加通用分析器 |
+| 2023/05/25 | 全面重构，参数化工作流 |
+| 2023/04/20 | 初始提交 |
+
 ## TODO
 
 - [ ] GUI / 桌面前端

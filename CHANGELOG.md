@@ -4,19 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### Fixed
-- **PDF Conversion Fallback System** - Resolved Issue #4: PDF conversion failures
-  - Added multi-library fallback mechanism for PDF processing
-  - Primary: pdfplumber (most accurate)
-  - Fallback 1: PyPDF2 (handles CropBox issues)
-  - Fallback 2: pdfminer.six (robust alternative)
-  - Suppressed CropBox warning messages from pdfplumber
-  - Automatic library switching when one method fails
-  - Improved error logging with library-specific debug messages
+## [2026-04-18]
+
+### Changed
+- Security and resilience hardening for crawler/downloader paths
+- Improved retry strategy and request failure handling for unstable network scenarios
+- Optimized text analysis hot paths to reduce unnecessary repeated computation
 
 ### Added
-- Optional dependencies: PyPDF2 and pdfminer.six for better PDF compatibility
-- Detailed conversion method logging (shows which library succeeded)
+- Added submodule-level protection to avoid accidental open-source leakage of private paid scripts
+
+### Fixed
+- PDF conversion fallback behavior and error logging robustness in mixed PDF sources
 
 ## [2025-11-21] - Major Refactor
 
