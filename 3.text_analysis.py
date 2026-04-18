@@ -10,6 +10,7 @@ from __future__ import annotations
 import logging
 import os
 import re
+from collections import Counter
 from dataclasses import dataclass
 from multiprocessing import Pool, cpu_count
 from typing import Iterator, List, Optional, Tuple
@@ -35,8 +36,9 @@ def extract_keywords(filename: str, keywords: List[str]) -> Tuple[List[int], int
     content_non = re.sub(r"[^\u4e00-\u9fa5]", "", content)
     words_non = [word for word in jieba.cut(content_non) if word.strip()]
 
+    word_counter = Counter(words)
     for idx, keyword in enumerate(keywords):
-        keyword_counts[idx] = words.count(keyword)
+        keyword_counts[idx] = word_counter.get(keyword, 0)
 
     total_words = len(words_non)
     return keyword_counts, total_words
@@ -196,19 +198,35 @@ def validate_year_range(start_year: Optional[int], end_year: Optional[int]) -> N
 
 if __name__ == "__main__":
     # 自定义关键词列表，可按需扩展/替换
-    KEYWORDS = [
-        "人工智能",
-        "商业智能",
-        "图像理解",
-        "投资决策辅助系统",
-        "智能数据分",
-        "大数据",
-        "数据挖掘",
-        "文本挖掘",
+    raw_keywords = [
+        "利润",
+        "大幅",
+        "增长",
+        "毛利率",
+        "净利率",
+        "ROE",
+        "ROA",
+        "EPS",
+        "市盈率",
+        "市净率",
+        "现金流",
+        "负债",
+        "资产负债率",
+        "流动比率",
+        "速动比率",
+        "存货周转率",
+        "应收账款周转率",
+        "总资产周转率",
+        "净资产周转率",
+        "资产负债率",
+        "流动比率",
+        "速动比率",
     ]
+    # 去重并保持原有顺序
+    KEYWORDS = list(dict.fromkeys(raw_keywords))
 
-    # TXT 根目录（建议填写绝对路径，文件夹内按年份划分）
-    ROOT_FOLDER = "年报文件"
+    # TXT 根目录，可通过环境变量 ANNUAL_REPORT_ROOT 覆盖
+    ROOT_FOLDER = os.getenv("ANNUAL_REPORT_ROOT", "年报文件")
     # 需要统计的起始年份（包含）
     START_YEAR = 2023
     # 需要统计的结束年份（包含）

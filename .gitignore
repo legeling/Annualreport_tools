@@ -42,3 +42,6 @@ data/
 *.zip
 *.tar
 *.tar.gz
+
+# Private paid scripts (do not open source)
+batch_mda_extract.py
