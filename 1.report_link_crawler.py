@@ -53,6 +53,7 @@ class CNINFOClient:
     """巨潮资讯API客户端。"""
 
     BASE_URL = "https://www.cninfo.com.cn/new/hisAnnouncement/query"
+    PAGE_SIZE = 30
 
     HEADERS = {
         "Accept": "*/*",
@@ -96,7 +97,7 @@ class CNINFOClient:
         """构建请求数据。"""
         return {
             "pageNum": page_num,
-            "pageSize": 30,
+            "pageSize": self.PAGE_SIZE,
             "column": "szse",
             "tabName": "fulltext",
             "plate": self.config.plate,
@@ -168,13 +169,33 @@ class CNINFOClient:
         if not first_page_data:
             return all_results
 
-        total_pages = first_page_data.get("totalpages", 0)
+        announcements = first_page_data.get("announcements") or []
+        total_record_num = first_page_data.get(
+            "totalRecordNum",
+            first_page_data.get("totalAnnouncement")
+        )
+
+        if total_record_num is None:
+            total_pages = first_page_data.get("totalpages", 0)
+        else:
+            try:
+                total_record_num = int(total_record_num)
+            except (TypeError, ValueError):
+                logging.warning(f"日期范围 {date_range} 的总记录数字段异常: {total_record_num}")
+                total_pages = first_page_data.get("totalpages", 0)
+            else:
+                if total_record_num == 0:
+                    logging.info(f"日期范围 {date_range} 无数据")
+                    return all_results
+                total_pages = (total_record_num + self.PAGE_SIZE - 1) // self.PAGE_SIZE
+
+        if total_pages == 0:
+            total_pages = 1 if announcements else 0
         if total_pages == 0:
             logging.info(f"日期范围 {date_range} 无数据")
             return all_results
 
         # 处理第一页数据
-        announcements = first_page_data.get("announcements")
         if announcements:
             all_results.extend(announcements)
 
