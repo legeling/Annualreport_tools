@@ -61,9 +61,9 @@ class ConverterConfig:
     target_year: int  # 目标年份
     delete_pdf: bool = False  # 是否删除转换后的PDF
     max_retries: int = 3  # 下载最大重试次数
-    timeout: int = 15  # 请求超时时间（秒）
+    timeout: int = 30  # 请求超时时间（秒）
     chunk_size: int = 8192  # 下载块大小
-    processes: Optional[int] = None  # 进程数，None表示自动
+    processes: Optional[int] = None  # 进程数，None表示使用保守默认值
 
 
 class PDFDownloader:
@@ -360,16 +360,18 @@ class PDFConverter:
 
 def _process_task(args: Tuple) -> bool:
     """多进程任务包装函数。"""
-    converter, code, name, year, pdf_url = args
+    config, code, name, year, pdf_url = args
+    converter = PDFConverter(config)
     return converter.process_single_file(code, name, year, pdf_url)
 
 
 class AnnualReportProcessor:
     """年报批量处理器。"""
 
+    DEFAULT_MAX_WORKERS = 4
+
     def __init__(self, config: ConverterConfig) -> None:
         self.config = config
-        self.converter = PDFConverter(config)
 
     def _load_excel_data(self) -> Optional[pd.DataFrame]:
         """加载Excel数据。"""
@@ -410,6 +412,18 @@ class AnnualReportProcessor:
         logging.info(f"找到 {len(filtered)} 条 {self.config.target_year} 年的记录")
         return filtered
 
+    def _resolve_worker_count(self, task_count: int) -> int:
+        """计算下载转换进程数，默认限制并发以降低CNINFO超时概率。"""
+        if task_count <= 0:
+            return 0
+
+        if self.config.processes is not None:
+            if self.config.processes < 1:
+                raise ValueError("processes 必须大于等于 1")
+            return min(self.config.processes, task_count)
+
+        return min(cpu_count(), self.DEFAULT_MAX_WORKERS, task_count)
+
     def run(self) -> None:
         """执行批量处理流程。"""
         logging.info("="*60)
@@ -435,12 +449,12 @@ class AnnualReportProcessor:
 
         # 准备任务列表
         tasks = [
-            (self.converter, row['公司代码'], row['公司简称'], row['年份'], row['年报链接'])
+            (self.config, row['公司代码'], row['公司简称'], row['年份'], row['年报链接'])
             for _, row in filtered_df.iterrows()
         ]
 
         # 多进程处理
-        worker_count = self.config.processes or min(cpu_count(), len(tasks))
+        worker_count = self._resolve_worker_count(len(tasks))
         logging.info(f"使用 {worker_count} 个进程处理 {len(tasks)} 个文件")
 
         success_count = 0
@@ -475,8 +489,8 @@ if __name__ == '__main__':
 
     # 下载配置
     MAX_RETRIES = 3  # 最大重试次数
-    TIMEOUT = 15  # 请求超时（秒）
-    PROCESSES = None  # 进程数（None表示自动）
+    TIMEOUT = 30  # 请求超时（秒）
+    PROCESSES = None  # 进程数（None表示最多4个并发，避免触发超时）
 
     # ==================== 执行逻辑 ====================
 

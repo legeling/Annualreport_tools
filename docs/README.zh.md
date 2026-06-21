@@ -47,6 +47,12 @@
 4. 启动 `3.text_analysis.py`（多进程）或 `text_analysis_universal.py` 生成Excel中的关键词总计和总词数。
 5. 查看 [Wiki](https://github.com/legeling/Annualreport_tools/wiki) 或 `docs/` 获取特定语言的详细教程。
 
+### 运行建议（安全与稳定）
+
+- 默认使用 `https` 请求与重试退避，请勿私自提高请求频率。
+- 下载器仅允许 `cninfo` 官方域名，避免误下载未知来源文件。
+- `2.pdf_batch_converter.py` 默认最多使用 4 个并发进程，并将下载超时设置为 30 秒；如仍遇到 `ReadTimeout`，请手动降低脚本中的 `PROCESSES`。
+
 ## 模块概览
 
 | 脚本/资源 | 说明 |

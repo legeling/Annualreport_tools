@@ -51,6 +51,7 @@
 
 - 默认使用 `https` 请求与重试退避，请勿私自提高请求频率。
 - 下载器仅允许 `cninfo` 官方域名，避免误下载未知来源文件。
+- `2.pdf_batch_converter.py` 默认最多使用 4 个并发进程，并将下载超时设置为 30 秒；如仍遇到 `ReadTimeout`，请手动降低脚本中的 `PROCESSES`。
 - 目录建议用环境变量配置：
   - `ANNUAL_REPORT_ROOT`：`3.text_analysis.py` 根目录
   - `UNIVERSAL_ANALYSIS_DIR`：`text_analysis_universal.py` 输入目录
