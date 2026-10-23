@@ -38,4 +38,4 @@ Excel 中因空单元格而读成 `2025.0` 的数值年份现在可正常匹配�
 ## 验证范围
 
 离线测试使用生成的文本 PDF、空白 PDF、模拟页面异常和下载响应验证输出及资源清理。
-这些检查不代替用户的具体异常 PDF、链接表、扫描件 OCR 或 Windows/Python 3.14 环境验证。
+这些检查覆盖下载与转换相关用例；已在 Python 3.12 / 3.14 下跑通 `python -m unittest discover -s tests`。仍不代替用户具体异常 PDF、链接表、扫描件 OCR 或个别 Windows 环境验证。若 `pip install -r requirements.txt` 在 3.14 失败，请升级 pip 后重试（旧版会卡住无 3.14 轮子的 `pandas==2.2.3`）。
