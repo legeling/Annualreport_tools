@@ -6,7 +6,7 @@
     <a href="https://github.com/legeling/Annualreport_tools/stargazers"><img src="https://img.shields.io/github/stars/legeling/Annualreport_tools?style=flat-square" alt="GitHub Stars"/></a>
     <a href="https://github.com/legeling/Annualreport_tools/network/members"><img src="https://img.shields.io/github/forks/legeling/Annualreport_tools?style=flat-square" alt="GitHub Forks"/></a>
     <a href="https://github.com/legeling/Annualreport_tools/watchers"><img src="https://img.shields.io/github/watchers/legeling/Annualreport_tools?style=flat-square" alt="GitHub Watchers"/></a>
-    <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python Version"/>
+    <img src="https://img.shields.io/badge/Python-3.10%20%7C%203.12%20%7C%203.14-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python Version"/>
     <a href="https://github.com/legeling/Annualreport_tools/issues"><img src="https://img.shields.io/github/issues/legeling/Annualreport_tools?style=flat-square" alt="GitHub Issues"/></a>
   </p>
 </div>

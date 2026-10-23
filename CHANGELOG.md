@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- Python 3.14 依赖安装：放宽 `requirements.txt` 中 `pandas` / `pdfplumber` / `requests` / `openpyxl` 版本下限，避免旧版 `pandas==2.2.3` 在 3.14 无轮子时强制源码编译失败
+- 本地在 Python 3.12 与 3.14 下跑通下载/转换相关 unittest（20 项）
+
 ## [2026-04-18]
 
 ### Changed
