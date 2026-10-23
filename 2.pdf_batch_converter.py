@@ -14,6 +14,7 @@ import os
 import random
 import re
 import time
+import tempfile
 import warnings
 from dataclasses import dataclass
 from multiprocessing import Pool, cpu_count
@@ -122,9 +123,10 @@ class PDFDownloader:
         Returns:
             下载是否成功
         """
+        tmp_file_path = None
         try:
             if not self._is_allowed_url(pdf_url):
-                logging.error(f"拒绝下载非白名单链接: {pdf_url}")
+                logging.error(f"需要巨潮资讯 PDF 直链，不支持公告详情网页；请使用链接爬取脚本生成的“年报链接”列: {pdf_url}")
                 return False
 
             # 请求PDF文件
@@ -141,20 +143,22 @@ class PDFDownloader:
                 # 验证Content-Type
                 content_type = response.headers.get("Content-Type", "")
                 if "pdf" not in content_type.lower():
-                    logging.error(f"服务器返回的不是 PDF: {content_type}")
+                    logging.error(f"服务器返回的不是 PDF: {content_type}；请检查链接是否为公告详情网页，而不是 PDF 直链")
                     return False
 
-                tmp_file_path = f"{pdf_file_path}.part"
-                with open(tmp_file_path, "wb") as f:
+                with tempfile.NamedTemporaryFile(
+                    dir=Path(pdf_file_path).parent, prefix=Path(pdf_file_path).name + '.',
+                    suffix='.part', delete=False,
+                ) as f:
+                    tmp_file_path = f.name
                     for chunk in response.iter_content(chunk_size=self.chunk_size):
                         if chunk:
                             f.write(chunk)
 
-            os.replace(tmp_file_path, pdf_file_path)
-
-            # 验证文件完整性
-            if not self._verify_pdf(pdf_file_path):
+            # 不把无效响应替换成正式文件。
+            if not self._verify_pdf(tmp_file_path):
                 return False
+            os.replace(tmp_file_path, pdf_file_path)
 
             logging.info(f"PDF 下载成功: {pdf_file_path}")
             return True
@@ -168,6 +172,9 @@ class PDFDownloader:
         except OSError as e:
             logging.error(f"文件写入失败: {e}")
             return False
+        finally:
+            if tmp_file_path is not None:
+                Path(tmp_file_path).unlink(missing_ok=True)
 
     @staticmethod
     def _verify_pdf(pdf_file_path: str) -> bool:
@@ -228,14 +235,10 @@ class PDFConverter:
         try:
             with pdfplumber.open(pdf_path) as pdf:
                 with open(txt_path, 'w', encoding='utf-8') as f:
-                    for page_num, page in enumerate(pdf.pages, 1):
-                        try:
-                            text = page.extract_text()
-                            if text:
-                                f.write(text)
-                        except Exception as e:
-                            logging.debug(f"pdfplumber提取第 {page_num} 页失败: {e}")
-                            continue
+                    for page in pdf.pages:
+                        text = page.extract_text()
+                        if text:
+                            f.write(text + '\n')
             return True
         except Exception as e:
             logging.debug(f"pdfplumber转换失败: {e}")
@@ -247,16 +250,13 @@ class PDFConverter:
             return False
 
         try:
-            reader = PdfReader(pdf_path)
-            with open(txt_path, 'w', encoding='utf-8') as f:
-                for page_num, page in enumerate(reader.pages, 1):
-                    try:
+            with open(pdf_path, 'rb') as source:
+                reader = PdfReader(source)
+                with open(txt_path, 'w', encoding='utf-8') as f:
+                    for page in reader.pages:
                         text = page.extract_text()
                         if text:
-                            f.write(text)
-                    except Exception as e:
-                        logging.debug(f"PyPDF2提取第 {page_num} 页失败: {e}")
-                        continue
+                            f.write(text + '\n')
             return True
         except Exception as e:
             logging.debug(f"PyPDF2转换失败: {e}")
@@ -284,25 +284,38 @@ class PDFConverter:
         2. PyPDF2（备用方案1）
         3. pdfminer.six（备用方案2）
         """
-        # 方法1: pdfplumber
-        if self._convert_with_pdfplumber(pdf_path, txt_path):
-            logging.info(f"转换成功 (pdfplumber): {txt_path}")
-            return True
+        # 每个解析器写入独立临时文件，完整执行且有文本后才发布结果。
+        methods = (
+            ('pdfplumber', self._convert_with_pdfplumber),
+            ('PyPDF2', self._convert_with_pypdf2),
+            ('pdfminer', self._convert_with_pdfminer),
+        )
+        for name, convert in methods:
+            with tempfile.NamedTemporaryFile(
+                dir=Path(txt_path).parent, prefix=Path(txt_path).name + '.',
+                suffix='.part', delete=False,
+            ) as temp:
+                temp_path = temp.name
+            try:
+                if convert(pdf_path, temp_path) and self._has_text(temp_path):
+                    os.replace(temp_path, txt_path)
+                    logging.info(f"转换成功 ({name}): {txt_path}")
+                    return True
+                logging.warning(f"{name} 未能完整提取有效文本: {pdf_path}")
+            finally:
+                Path(temp_path).unlink(missing_ok=True)
 
-        logging.warning(f"pdfplumber转换失败，尝试备用方案: {pdf_path}")
-
-        # 方法2: PyPDF2
-        if self._convert_with_pypdf2(pdf_path, txt_path):
-            logging.info(f"转换成功 (PyPDF2): {txt_path}")
-            return True
-
-        # 方法3: pdfminer.six
-        if self._convert_with_pdfminer(pdf_path, txt_path):
-            logging.info(f"转换成功 (pdfminer): {txt_path}")
-            return True
-
-        logging.error(f"所有PDF转换方法均失败: {pdf_path}")
+        logging.error(f"所有PDF转换方法均失败或未提取到文本；请检查是否为扫描件、加密或损坏文件: {pdf_path}")
         return False
+
+    @staticmethod
+    def _has_text(txt_path: str) -> bool:
+        """确认缓存含非空白 UTF-8 文本，不把空输出作为成功结果。"""
+        try:
+            with open(txt_path, encoding='utf-8') as source:
+                return any(line.strip() for line in source)
+        except (OSError, UnicodeError):
+            return False
 
     def process_single_file(
         self,
@@ -329,12 +342,12 @@ class PDFConverter:
 
         try:
             # 检查TXT是否已存在
-            if os.path.exists(txt_file_path):
+            if self._has_text(txt_file_path):
                 logging.info(f"文件已存在，跳过: {base_name}.txt")
                 return True
 
             # 下载PDF（如果不存在）
-            if not os.path.exists(pdf_file_path):
+            if not os.path.exists(pdf_file_path) or not self.downloader._verify_pdf(pdf_file_path):
                 if not self._download_with_retry(pdf_url, pdf_file_path):
                     return False
 
@@ -362,7 +375,10 @@ def _process_task(args: Tuple) -> bool:
     """多进程任务包装函数。"""
     config, code, name, year, pdf_url = args
     converter = PDFConverter(config)
-    return converter.process_single_file(code, name, year, pdf_url)
+    try:
+        return converter.process_single_file(code, name, year, pdf_url)
+    finally:
+        converter.downloader.session.close()
 
 
 class AnnualReportProcessor:
@@ -408,7 +424,7 @@ class AnnualReportProcessor:
             return pd.DataFrame()
 
         # 过滤年份
-        filtered = df[df['年份'].astype(str) == str(self.config.target_year)]
+        filtered = df[pd.to_numeric(df['年份'], errors='coerce') == self.config.target_year]
         logging.info(f"找到 {len(filtered)} 条 {self.config.target_year} 年的记录")
         return filtered
 
@@ -449,7 +465,7 @@ class AnnualReportProcessor:
 
         # 准备任务列表
         tasks = [
-            (self.config, row['公司代码'], row['公司简称'], row['年份'], row['年报链接'])
+            (self.config, int(row['公司代码']), row['公司简称'], int(row['年份']), row['年报链接'])
             for _, row in filtered_df.iterrows()
         ]
 

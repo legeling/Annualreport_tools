@@ -49,6 +49,8 @@
 
 ### 运行建议（安全与稳定）
 
+下载返回 HTML、年份不匹配、TXT 空白或文件数量不一致时，见 [下载与文本转换排查](./docs/troubleshooting.md)。
+
 - 默认使用 `https` 请求与重试退避，请勿私自提高请求频率。
 - 下载器仅允许 `cninfo` 官方域名，避免误下载未知来源文件。
 - `2.pdf_batch_converter.py` 默认最多使用 4 个并发进程，并将下载超时设置为 30 秒；如仍遇到 `ReadTimeout`，请手动降低脚本中的 `PROCESSES`。
