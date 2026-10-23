@@ -20,8 +20,24 @@ import xlwt
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
+_registered_keywords: set = set()
+
+
+def _register_keywords(keywords: List[str]) -> None:
+    """在当前进程内把关键词加入 jieba 词典（每个进程只加一次）。
+
+    Windows/macOS 默认用 spawn 启动子进程，主进程里加的自定义词不会带过去，
+    所以必须在分词的进程里自己加，否则「数字资产」这类词会被切碎、词频算成 0。
+    """
+    for word in keywords:
+        if word not in _registered_keywords:
+            jieba.add_word(word)
+            _registered_keywords.add(word)
+
+
 def extract_keywords(filename: str, keywords: List[str]) -> Tuple[List[int], int]:
     """读取单个文件并统计关键词及总词数。"""
+    _register_keywords(keywords)
     keyword_counts = [0] * len(keywords)
     total_words = 0
 
@@ -79,9 +95,8 @@ class KeywordAnalyzer:
         self._write_header()
 
     def _extend_jieba_dict(self) -> None:
-        """一次性将关键词加入 jieba 自定义词典，避免每个任务重复注入。"""
-        for word in self.config.keywords:
-            jieba.add_word(word)
+        """在主进程加载关键词；子进程会在 extract_keywords 里各自再加载一次。"""
+        _register_keywords(self.config.keywords)
 
     def _write_header(self) -> None:
         for col, title in enumerate(self.HEADER):
