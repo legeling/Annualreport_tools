@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- `3.text_analysis.py`：Windows/macOS 默认 spawn 多进程下，自定义关键词只加在主进程的 jieba 里，子进程分词拿不到，导致「数字资产」「大数据」等词频全部为 0；现在每个进程在统计前各自加载关键词，并新增 spawn 模式下的单测
 - Python 3.14 依赖安装：放宽 `requirements.txt` 中 `pandas` / `pdfplumber` / `requests` / `openpyxl` 版本下限，避免旧版 `pandas==2.2.3` 在 3.14 无轮子时强制源码编译失败
 - 本地在 Python 3.12 与 3.14 下跑通下载/转换相关 unittest（20 项）
 
